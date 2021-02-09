@@ -1,3 +1,4 @@
+//local em que as listas serão salvas
 const initialState = {
   list: [{title: 'Primeira Nota', body: 'Testando...'}],
 };
