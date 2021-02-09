@@ -11,6 +11,8 @@ import {
   CloseButtonImage,
 } from './styles';
 
+import {Alert} from 'react-native';
+
 export default () => {
   const navigation = useNavigation();
   const route = useRoute();
@@ -25,7 +27,7 @@ export default () => {
     //verifica se foi enviado uma key da nota
     if (route.params?.key != undefined && list[route.params.key]) {
       setStatus('edit');
-      setTitle(list[route.params.key].body);
+      setTitle(list[route.params.key].title);
       setBody(list[route.params.key].body);
     }
   }, []);
@@ -51,8 +53,28 @@ export default () => {
 
   const handleSaveButton = () => {
     if (title != '' && body != '') {
+      if (status == 'edit') {
+        dispatch({
+          type: 'EDIT_NOTE',
+          payload: {
+            key: route.params.key,
+            title,
+            body,
+          },
+        });
+      } else {
+        dispatch({
+          type: 'ADD_NOTE',
+          payload: {
+            title,
+            body,
+          },
+        });
+      }
+
+      navigation.goBack();
     } else {
-      alert('Preencha título e corpo');
+      Alert.alert('Aviso', 'É necessário preencher título e corpo!');
     }
   };
 
