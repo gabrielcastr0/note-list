@@ -1,7 +1,15 @@
 import React, {useState, useEffect, useLayoutEffect} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
 import {useNavigation, useRoute} from '@react-navigation/native';
-import {Container, TitleInput, BodyInput} from './styles';
+import {
+  Container,
+  TitleInput,
+  BodyInput,
+  SaveButton,
+  SaveButtonImage,
+  CloseButton,
+  CloseButtonImage,
+} from './styles';
 
 export default () => {
   const navigation = useNavigation();
@@ -14,12 +22,43 @@ export default () => {
   const [status, setStatus] = useState('new');
 
   useEffect(() => {
+    //verifica se foi enviado uma key da nota
     if (route.params?.key != undefined && list[route.params.key]) {
       setStatus('edit');
       setTitle(list[route.params.key].body);
       setBody(list[route.params.key].body);
     }
   }, []);
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      title: status == 'new' ? 'Nova Anotação' : 'Editar Anotação',
+      headerLeft: () => (
+        <CloseButton underlayColor="transparent" onPress={handleCloseButton}>
+          <CloseButtonImage
+            source={require('../../assets/close.png')}></CloseButtonImage>
+        </CloseButton>
+      ),
+
+      headerRight: () => (
+        <SaveButton onPress={handleSaveButton} underlayColor="transparent">
+          <SaveButtonImage
+            source={require('../../assets/save.png')}></SaveButtonImage>
+        </SaveButton>
+      ),
+    });
+  }, [status, title, body]);
+
+  const handleSaveButton = () => {
+    if (title != '' && body != '') {
+    } else {
+      alert('Preencha título e corpo');
+    }
+  };
+
+  const handleCloseButton = () => {
+    navigation.goBack();
+  };
 
   return (
     <Container>
